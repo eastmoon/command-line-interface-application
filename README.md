@@ -34,3 +34,8 @@ cli [system parameter] [command] [command parameter]
 
 + 命令字串解析
 + 巢式命令架構
+
+### 使用事項
+
++ ```cli.bat``` 請於 Windows 作業系統環境下測試
++ ```cli.sh```  請於 Linux、Mac 作業系統環境下測試
