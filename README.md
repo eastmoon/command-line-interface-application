@@ -35,7 +35,16 @@ cli [system parameter] [command] [command parameter]
 + 命令字串解析
 + 巢式命令架構
 
+在本應用程式中，使用 invoke 的方式調用每個命令模組的函數，其中共有三個函數
+
++ ```[command]```        : 命令本身的腳本
++ ```[command]-args```   : 命令腳本的選項功能處理函數
++ ```[command]-help```   : 命令腳本的說明函數
+
+若命令模組缺少其中一個函數，在執行階段會發生無法正確呼叫函數而導致系統拋出錯誤訊息。
+
 ### 使用事項
 
 + ```cli.bat``` 請於 Windows 作業系統環境下測試
+
 + ```cli.sh```  請於 Linux、Mac 作業系統環境下測試
