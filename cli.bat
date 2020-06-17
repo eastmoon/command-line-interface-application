@@ -13,11 +13,14 @@
 @rem setting batch file
 @rem ref : https://www.tutorialspoint.com/batch_script/batch_script_if_else_statement.htm
 @rem ref : https://poychang.github.io/note-batch/
+
 @echo off
 setlocal
 setlocal enabledelayedexpansion
 
 :: ------------------- declare CLI file variable -------------------
+@rem retrieve project name
+@rem Ref : https://www.robvanderwoude.com/ntfor.php
 @rem Directory = %~dp0
 @rem Object Name With Quotations=%0
 @rem Object Name Without Quotes=%~0
@@ -40,18 +43,18 @@ set COMMAND_AC_AGRS=
 
 :: ------------------- declare variable -------------------
 
-@rem retrieve project name
-@rem Ref : https://www.robvanderwoude.com/ntfor.php
 for %%a in ("%cd%") do (
     set PROJECT_NAME=%%~na
 )
 set PROJECT_ENV=dev
 
 :: ------------------- execute script -------------------
+
 call :main %*
 goto end
 
 :: ------------------- declare function -------------------
+
 :main (
     call :argv-parser %*
     call :%BREADCRUMB%-args %COMMAND_BC_AGRS%
