@@ -8,6 +8,7 @@
 # Basically, CLI will not use "--options" to execute function, "--help, -h" is an exception.
 # But, if need exception, it will need to thinking is common or individual, and need to change BREADCRUMB variable in [command]-args function.
 #
+# Ref : https://www.cyberciti.biz/faq/category/bash-shell/
 # Ref : https://blog.longwin.com.tw/2017/04/bash-shell-script-get-self-file-name-2017/
 
 # ------------------- shell setting -------------------
