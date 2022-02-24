@@ -60,8 +60,7 @@ goto end
     set COMMAND_BC_AGRS=
     set COMMAND_AC_AGRS=
     call :argv-parser %*
-    call :%BREADCRUMB%-args %COMMAND_BC_AGRS%
-    call :common-args %COMMAND_BC_AGRS%
+    call :main-args-parser %COMMAND_BC_AGRS%
     IF defined COMMAND (
         set BREADCRUMB=%BREADCRUMB%-%COMMAND%
         call :main %COMMAND_AC_AGRS%
@@ -70,12 +69,21 @@ goto end
     )
     goto end
 )
-:common-args (
+:main-args-parser (
     for /f "tokens=1*" %%p in ("%*") do (
-        if "%%p"=="-h" (set BREADCRUMB=%BREADCRUMB%-help)
-        if "%%p"=="--help" (set BREADCRUMB=%BREADCRUMB%-help)
-        call :common-args %%q
+        for /f "tokens=1,2 delims==" %%i in ("%%p") do (
+            call :%BREADCRUMB%-args %%i %%j
+            call :common-args %%i %%j
+        )
+        call :main-args-parser %%q
     )
+    goto end
+)
+:common-args (
+    set COMMON_ARGS_KEY=%1
+    set COMMON_ARGS_VALUE=%2
+    if "%COMMON_ARGS_KEY%"=="-h" (set BREADCRUMB=%BREADCRUMB%-help)
+    if "%COMMON_ARGS_KEY%"=="--help" (set BREADCRUMB=%BREADCRUMB%-help)
     goto end
 )
 :argv-parser (
@@ -102,9 +110,9 @@ goto end
 )
 
 :cli-args (
-    for %%p in (%*) do (
-        if "%%p"=="--prod" (set PROJECT_ENV=prod)
-    )
+    set COMMON_ARGS_KEY=%1
+    set COMMON_ARGS_VALUE=%2
+    if "%COMMON_ARGS_KEY%"=="--prod" (set PROJECT_ENV=prod)
     goto end
 )
 
@@ -139,14 +147,11 @@ set VARTEST=0
 )
 
 :cli-up-args (
-    for /f "tokens=1*" %%p in ("%*") do (
-        for /f "tokens=1,2 delims==" %%i in ("%%p") do (
-            if "%%i"=="--var1" (set VARNUMBER1=%%j)
-            if "%%i"=="--var2" (set VARNUMBER2=%%j)
-            if "%%i"=="--test" (set VARTEST=1)
-        )
-        call :cli-up-args %%q
-    )
+    set COMMON_ARGS_KEY=%1
+    set COMMON_ARGS_VALUE=%2
+    if "%COMMON_ARGS_KEY%"=="--var1" (set VARNUMBER1=%COMMON_ARGS_VALUE%)
+    if "%COMMON_ARGS_KEY%"=="--var2" (set VARNUMBER2=%COMMON_ARGS_VALUE%)
+    if "%COMMON_ARGS_KEY%"=="--test" (set VARTEST=1)
     goto end
 )
 
