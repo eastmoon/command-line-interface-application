@@ -47,7 +47,7 @@ function main() {
         key=${ADDR[0]}
         value=${ADDR[1]}
         eval ${BREADCRUMB}-args ${key} ${value}
-        main-args ${key} ${value}
+        common-args ${key} ${value}
     done
     # Execute command
     if [ ! -z ${COMMAND} ];
@@ -59,7 +59,7 @@ function main() {
     fi
 }
 
-function main-args() {
+function common-args() {
     key=${1}
     value=${2}
     case ${key} in
