@@ -85,8 +85,8 @@ function argv-parser() {
             then
                 COMMAND_BC_AGRS+=(${arg})
             else
-              COMMAND=${arg}
-              is_find_cmd=1
+                COMMAND=${arg}
+                is_find_cmd=1
             fi
         else
             COMMAND_AC_AGRS+=(${arg})
@@ -127,12 +127,31 @@ function cli-help() {
 
 # ------------------- Command "up" mathod -------------------
 
+VARNUMBER1=0
+VARNUMBER2=0
+VARTEST=0
+
 function cli-up {
     echo "> Server UP with ${PROJECT_ENV} environment"
+    echo "> VARNUMBER1 = ${VARNUMBER1}"
+    echo "> VARNUMBER2 = ${VARNUMBER2}"
+    echo "> VARTEST = ${VARTEST}"
 }
 
 function cli-up-args {
-    return 0
+    key=${1}
+    value=${2}
+    case ${key} in
+        "--var1")
+            VARNUMBER1=${value}
+            ;;
+        "--var2")
+            VARNUMBER2=${value}
+            ;;
+        "--test")
+            VARTEST=1
+            ;;
+    esac
 }
 
 function cli-up-help {
@@ -141,8 +160,32 @@ function cli-up-help {
     echo ""
     echo "Options:"
     echo "    --help, -h        Show more information with UP Command."
+    echo "Command:"
+    echo "    demo              Show demo info."
+    echo "Options:"
+    echo "    --help, -h        Show more information with UP Command."
+    echo "    --var1            Set VARNUMBER1 value."
+    echo "    --var2            Set VARNUMBER2 value."
+    echo "    --test            Set VARTEST is True ( 1 )."
 }
 
+# ------------------- Command "up"-"demo" mathod -------------------
+
+function cli-up-demo {
+    echo "> SHOW DEMO INFORMATION with ${PROJECT_ENV} environment"
+}
+
+function cli-up-demo-args {
+    return 0
+}
+
+function cli-up-demo-help {
+    echo "This is a Command Line Interface with project ${PROJECT_NAME}"
+    echo "Show demo info"
+    echo ""
+    echo "Options:"
+    echo "    --help, -h        Show more information with UP Command."
+}
 
 # ------------------- Command "down" mathod -------------------
 

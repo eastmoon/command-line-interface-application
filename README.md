@@ -49,6 +49,28 @@ cli [system parameter] [command] [command parameter]
 
 + ```cli.sh```  請於 Linux、Mac 作業系統環境下測試
 
+### 測試事項
+
+驗證與測試項目以 Windows 指令為主，Linux 與 Mac 請以 ```./cli.sh``` 執行
+
++ CLI 腳本執行：```cli.bat```，輸出 cli 的說明文件
++ CLI 共通 Options
+    - ```cli.bat --help```，CLI 共通參數 ( 設定於 common-args 中 )；此操作會直接顯示說明文件
+    - ```cli.bat --prod```，CLI 主要參數 ( 設定於 cli-args 中 )；此操作會修改環境變數 ( PROJECT_ENV )
++ CLI 命令
+    - ```cli.bat up```，執行 up 命令 ( 設定於 cli-up 中 )；此操作會先處理過依據執行 ```common-args```、```cli-args```、```cli-up-args``` 後才執行
+    - ```cli.bat --prod up```，設定 CLI 主要參數並執行於 up 命令中；此操作可以看到輸出顯示環境變數 ( PROJECT_ENV ) 的改變
+    - ```cli.bat up --help```，設定 CLI 共通參數執行，已顯示 up 說明文件 ( 設定於 cli-up-help 中 )；需注意，共通參數原則等同改變最後呼叫函數，其優先度大過一切設定
++ CLI 命令 Options
+    - ```cli.bat up --test```，執行 up 命令並宣告 ```--test``` 選項執行 ( 設定於 cli-up-args 中 )；此操作可以看到輸出 ```VARTEST = 1```
+    - ```cli.bat up --var1=123```，執行 up 命令並宣告 ```--var1``` 的內容 ( 設定於 cli-up-args 中 )；此操作可以看到輸出 ```VARNUMBER1 = 123```
+    - ```cli.bat up --var1=123 --test --var2=456```，執行 up 命令並宣告任意 Options，對於 Options 的執行順序是有左至右，若設計上有順序需要應加以說明
++ CLI 階層命令
+    - ```cli.bat```，執行 cli 主命令，但預設主命令並不包括任何行為，僅可設定主要參數
+    - ```cli.bat up```，執行 cli 中的 up 命令 ( 設定於 cli-up 中 )
+    - ```cli.bat up demo```，執行 cli 中的 up 命令中的 demo 命令 ( 設定於 cli-up-demo 中 )，設計上 up 命令與參數皆不會被執行，僅有 ```common-args```、```cli-args```、```cli-up-demo-args```、```cli-up-demo``` 會被依序執行
+
+
 ### 其他相關工具
 
 + [make script](https://foreachsam.github.io/book-util-make/book/content/example/make-scripts/)

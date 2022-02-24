@@ -56,9 +56,12 @@ goto end
 :: ------------------- declare function -------------------
 
 :main (
+    set COMMAND=
+    set COMMAND_BC_AGRS=
+    set COMMAND_AC_AGRS=
     call :argv-parser %*
     call :%BREADCRUMB%-args %COMMAND_BC_AGRS%
-    call :main-args %COMMAND_BC_AGRS%
+    call :common-args %COMMAND_BC_AGRS%
     IF defined COMMAND (
         set BREADCRUMB=%BREADCRUMB%-%COMMAND%
         call :main %COMMAND_AC_AGRS%
@@ -67,30 +70,27 @@ goto end
     )
     goto end
 )
-:main-args (
-    for %%p in (%*) do (
-        if "%%p"=="-h" ( set BREADCRUMB=%BREADCRUMB%-help )
-        if "%%p"=="--help" ( set BREADCRUMB=%BREADCRUMB%-help )
+:common-args (
+    for /f "tokens=1*" %%p in ("%*") do (
+        if "%%p"=="-h" (set BREADCRUMB=%BREADCRUMB%-help)
+        if "%%p"=="--help" (set BREADCRUMB=%BREADCRUMB%-help)
+        call :common-args %%q
     )
     goto end
 )
 :argv-parser (
-    set COMMAND=
-    set COMMAND_BC_AGRS=
-    set COMMAND_AC_AGRS=
-    set is_find_cmd=
-    for %%p in (%*) do (
-        IF NOT defined is_find_cmd (
+    for /f "tokens=1*" %%p in ("%*") do (
+        IF NOT defined COMMAND (
             echo %%p | findstr /r "\-" >nul 2>&1
             if errorlevel 1 (
                 set COMMAND=%%p
-                set is_find_cmd=TRUE
             ) else (
                 set COMMAND_BC_AGRS=!COMMAND_BC_AGRS! %%p
             )
         ) else (
             set COMMAND_AC_AGRS=!COMMAND_AC_AGRS! %%p
         )
+        call :argv-parser %%q
     )
     goto end
 )
@@ -103,7 +103,7 @@ goto end
 
 :cli-args (
     for %%p in (%*) do (
-        if "%%p"=="--prod" ( set PROJECT_ENV=prod )
+        if "%%p"=="--prod" (set PROJECT_ENV=prod)
     )
     goto end
 )
@@ -114,7 +114,7 @@ goto end
     echo.
     echo Options:
     echo      --help, -h        Show more information with CLI.
-    echo      --pord            Setting project environment with "prod", default is "dev"
+    echo      --prod            Setting project environment with "prod", default is "dev"
     echo.
     echo Command:
     echo      up                Startup Server.
@@ -126,12 +126,27 @@ goto end
 
 :: ------------------- Command "up" mathod -------------------
 
+set VARNUMBER1=0
+set VARNUMBER2=0
+set VARTEST=0
+
 :cli-up (
     echo ^> Server UP with %PROJECT_ENV% environment
+    echo ^> VARNUMBER1 = %VARNUMBER1%
+    echo ^> VARNUMBER2 = %VARNUMBER2%
+    echo ^> VARTEST = %VARTEST%
     goto end
 )
 
 :cli-up-args (
+    for /f "tokens=1*" %%p in ("%*") do (
+        for /f "tokens=1,2 delims==" %%i in ("%%p") do (
+            if "%%i"=="--var1" (set VARNUMBER1=%%j)
+            if "%%i"=="--var2" (set VARNUMBER2=%%j)
+            if "%%i"=="--test" (set VARTEST=1)
+        )
+        call :cli-up-args %%q
+    )
     goto end
 )
 
@@ -139,10 +154,36 @@ goto end
     echo This is a Command Line Interface with project %PROJECT_NAME%
     echo Startup Server
     echo.
+    echo Command:
+    echo      demo              Show demo info.
+    echo Options:
+    echo      --help, -h        Show more information with UP Command.
+    echo      --var1            Set VARNUMBER1 value.
+    echo      --var2            Set VARNUMBER2 value.
+    echo      --test            Set VARTEST is True ( 1 ).
+    goto end
+)
+
+:: ------------------- Command "up"-"demo" mathod -------------------
+
+:cli-up-demo (
+    echo ^> SHOW DEMO INFORMATION with %PROJECT_ENV% environment
+    goto end
+)
+
+:cli-up-demo-args (
+    goto end
+)
+
+:cli-up-demo-help (
+    echo This is a Command Line Interface with project %PROJECT_NAME%
+    echo Show demo info
+    echo.
     echo Options:
     echo      --help, -h        Show more information with UP Command.
     goto end
 )
+
 
 :: ------------------- Command "down" mathod -------------------
 
