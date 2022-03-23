@@ -47,6 +47,9 @@ for %%a in ("%cd%") do (
     set PROJECT_NAME=%%~na
 )
 set PROJECT_ENV=dev
+set VARNUMBER1=0
+set VARNUMBER2=0
+set VARTEST=0
 
 :: ------------------- execute script -------------------
 
@@ -133,10 +136,6 @@ goto end
 )
 
 :: ------------------- Command "up" mathod -------------------
-
-set VARNUMBER1=0
-set VARNUMBER2=0
-set VARTEST=0
 
 :cli-up (
     echo ^> Server UP with %PROJECT_ENV% environment
