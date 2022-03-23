@@ -95,7 +95,7 @@ function argv-parser() {
 }
 
 
-# ------------------- Main mathod -------------------
+# ------------------- Main method -------------------
 
 function cli() {
     cli-help
@@ -125,7 +125,11 @@ function cli-help() {
     echo "Run 'cli [COMMAND] --help' for more information on a command."
 }
 
-# ------------------- Command "up" mathod -------------------
+# ------------------- Common Command method -------------------
+
+
+
+# ------------------- Command "up" method -------------------
 
 VARNUMBER1=0
 VARNUMBER2=0
@@ -169,7 +173,7 @@ function cli-up-help {
     echo "    --test            Set VARTEST is True ( 1 )."
 }
 
-# ------------------- Command "up"-"demo" mathod -------------------
+# ------------------- Command "up"-"demo" method -------------------
 
 function cli-up-demo {
     echo "> SHOW DEMO INFORMATION with ${PROJECT_ENV} environment"
@@ -187,7 +191,7 @@ function cli-up-demo-help {
     echo "    --help, -h        Show more information with UP Command."
 }
 
-# ------------------- Command "down" mathod -------------------
+# ------------------- Command "down" method -------------------
 
 function cli-down {
     echo "> Server DOWN"

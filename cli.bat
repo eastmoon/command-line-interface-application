@@ -106,7 +106,7 @@ goto end
     goto end
 )
 
-:: ------------------- Main mathod -------------------
+:: ------------------- Main method -------------------
 
 :cli (
     goto cli-help
@@ -135,7 +135,9 @@ goto end
     goto end
 )
 
-:: ------------------- Command "up" mathod -------------------
+:: ------------------- Common Command method -------------------
+
+:: ------------------- Command "up" method -------------------
 
 :cli-up (
     echo ^> Server UP with %PROJECT_ENV% environment
@@ -168,7 +170,7 @@ goto end
     goto end
 )
 
-:: ------------------- Command "up"-"demo" mathod -------------------
+:: ------------------- Command "up"-"demo" method -------------------
 
 :cli-up-demo (
     echo ^> SHOW DEMO INFORMATION with %PROJECT_ENV% environment
@@ -189,7 +191,7 @@ goto end
 )
 
 
-:: ------------------- Command "down" mathod -------------------
+:: ------------------- Command "down" method -------------------
 
 :cli-down (
     echo ^> Server DOWN
