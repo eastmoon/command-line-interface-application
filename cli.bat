@@ -66,7 +66,12 @@ goto end
     call :main-args-parser %COMMAND_BC_AGRS%
     IF defined COMMAND (
         set BREADCRUMB=%BREADCRUMB%-%COMMAND%
-        call :main %COMMAND_AC_AGRS%
+        findstr /bi /c:":!BREADCRUMB!" %CLI_FILE% >nul 2>&1
+        IF errorlevel 1 (
+            goto cli-help
+        ) else (
+            call :main %COMMAND_AC_AGRS%
+        )
     ) else (
         call :%BREADCRUMB%
     )

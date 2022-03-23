@@ -69,6 +69,9 @@ cli [system parameter] [command] [command parameter]
     - ```cli.bat```，執行 cli 主命令，但預設主命令並不包括任何行為，僅可設定主要參數
     - ```cli.bat up```，執行 cli 中的 up 命令 ( 設定於 cli-up 中 )
     - ```cli.bat up demo```，執行 cli 中的 up 命令中的 demo 命令 ( 設定於 cli-up-demo 中 )，設計上 up 命令與參數皆不會被執行，僅有 ```common-args```、```cli-args```、```cli-up-demo-args```、```cli-up-demo``` 會被依序執行
++ CLI 錯誤指令
+    - ```cli.bat up1234```，執行 cli 中不存在的 up1234 命令
+    - 因不存在指令，會改執行 ```cli-help```，顯示說明文件
 
 
 ### 其他相關工具

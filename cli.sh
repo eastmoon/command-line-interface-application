@@ -53,7 +53,12 @@ function main() {
     if [ ! -z ${COMMAND} ];
     then
         BREADCRUMB=${BREADCRUMB}-${COMMAND}
-        main ${COMMAND_AC_AGRS[@]}
+        if [ "$(type -t ${BREADCRUMB})" == "function" ];
+        then
+            main ${COMMAND_AC_AGRS[@]}
+        else
+            cli-help
+        fi
     else
         eval ${BREADCRUMB}
     fi
