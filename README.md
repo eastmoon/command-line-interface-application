@@ -1,6 +1,6 @@
 # Command line interface Application
 
-### 簡介
+## 簡介
 
 命令介面應用程式是單一專案的整合介面層，亦是系統整合對單一單元的命令進入點。
 
@@ -18,7 +18,7 @@ CLI ( Command line interface ) application is an integrate script in single proj
 
 因此，複合的軟體間會需要系統整合腳本，而系統整合腳本則會呼叫 CLI 來運作該專案，以確保整合腳本不會與獨立的專案單元產生過度相依與專案間的交叉關聯問題。
 
-### 適用情境
+## 適用情境
 
 + 管理與整合不同軟體的 CLI 指令，例如 docker、node.js
 
@@ -26,7 +26,7 @@ CLI ( Command line interface ) application is an integrate script in single proj
 
 + 管理動應系統的權限指令，例如 chmod 777 等類似設定
 
-### 設計項目
+## 命令介面 - 單一檔案
 
 ```
 cli [system parameter] [command] [command parameter]
@@ -54,9 +54,11 @@ cli [system parameter] [command] [command parameter]
 
 ### 使用事項
 
-+ ```cli.bat``` 請於 Windows 作業系統環境下測試
+可執行腳本請參閱目錄 ```app``` 中：
 
++ ```cli.bat``` 請於 Windows 作業系統環境下測試
 + ```cli.sh```  請於 Linux、Mac 作業系統環境下測試
+> 為方便測試可使用 ```alias cli=${PWD}/cli.sh``` 來簡化執行命令，詳細參考 [alias](https://zh.wikipedia.org/zh-tw/Alias_(%E5%91%BD%E4%BB%A4)) 命令說明
 
 ### 測試事項
 
@@ -81,7 +83,6 @@ cli [system parameter] [command] [command parameter]
 + CLI 錯誤指令
     - ```cli.bat up1234```，執行 cli 中不存在的 up1234 命令
     - 因不存在指令，會改執行 ```cli-help```，顯示說明文件
-
 
 ### 其他相關工具
 
