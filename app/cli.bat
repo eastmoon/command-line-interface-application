@@ -9,7 +9,7 @@
 @rem NOTE, batch call [command]-args it could call correct one or call [command] and "-args" is parameter.
 @rem
 
-:: ------------------- batch setting -------------------
+@rem ------------------- batch setting -------------------
 @rem setting batch file
 @rem ref : https://www.tutorialspoint.com/batch_script/batch_script_if_else_statement.htm
 @rem ref : https://poychang.github.io/note-batch/
@@ -18,7 +18,7 @@
 setlocal
 setlocal enabledelayedexpansion
 
-:: ------------------- declare CLI file variable -------------------
+@rem ------------------- declare CLI file variable -------------------
 @rem retrieve project name
 @rem Ref : https://www.robvanderwoude.com/ntfor.php
 @rem Directory = %~dp0
@@ -34,14 +34,14 @@ set CLI_FILE=%~n0%~x0
 set CLI_FILENAME=%~n0
 set CLI_FILEEXTENSION=%~x0
 
-:: ------------------- declare CLI variable -------------------
+@rem ------------------- declare CLI variable -------------------
 
 set BREADCRUMB=cli
 set COMMAND=
 set COMMAND_BC_AGRS=
 set COMMAND_AC_AGRS=
 
-:: ------------------- declare variable -------------------
+@rem ------------------- declare variable -------------------
 
 for %%a in ("%cd%") do (
     set PROJECT_NAME=%%~na
@@ -51,14 +51,14 @@ set VARNUMBER1=0
 set VARNUMBER2=0
 set VARTEST=0
 
-:: ------------------- execute script -------------------
+@rem ------------------- execute script -------------------
 
 call :main %*
 goto end
 
-:: ------------------- declare function -------------------
+@rem ------------------- declare function -------------------
 
-:main (
+:main
     set COMMAND=
     set COMMAND_BC_AGRS=
     set COMMAND_AC_AGRS=
@@ -76,8 +76,8 @@ goto end
         call :%BREADCRUMB%
     )
     goto end
-)
-:main-args-parser (
+
+:main-args-parser
     for /f "tokens=1*" %%p in ("%*") do (
         for /f "tokens=1,2 delims==" %%i in ("%%p") do (
             call :%BREADCRUMB%-args %%i %%j
@@ -86,15 +86,15 @@ goto end
         call :main-args-parser %%q
     )
     goto end
-)
-:common-args (
+
+:common-args
     set COMMON_ARGS_KEY=%1
     set COMMON_ARGS_VALUE=%2
     if "%COMMON_ARGS_KEY%"=="-h" (set BREADCRUMB=%BREADCRUMB%-help)
     if "%COMMON_ARGS_KEY%"=="--help" (set BREADCRUMB=%BREADCRUMB%-help)
     goto end
-)
-:argv-parser (
+
+:argv-parser
     for /f "tokens=1*" %%p in ("%*") do (
         IF NOT defined COMMAND (
             echo %%p | findstr /r "\-" >nul 2>&1
@@ -109,22 +109,19 @@ goto end
         call :argv-parser %%q
     )
     goto end
-)
 
-:: ------------------- Main method -------------------
+@rem ------------------- Main method -------------------
 
-:cli (
+:cli
     goto cli-help
-)
 
-:cli-args (
+:cli-args
     set COMMON_ARGS_KEY=%1
     set COMMON_ARGS_VALUE=%2
     if "%COMMON_ARGS_KEY%"=="--prod" (set PROJECT_ENV=prod)
     goto end
-)
 
-:cli-help (
+:cli-help
     echo This is a Command Line Interface with project %PROJECT_NAME%
     echo If not input any command, at default will show HELP
     echo.
@@ -138,30 +135,27 @@ goto end
     echo.
     echo Run 'cli [COMMAND] --help' for more information on a command.
     goto end
-)
 
-:: ------------------- Common Command method -------------------
+@rem ------------------- Common Command method -------------------
 
-:: ------------------- Command "up" method -------------------
+@rem ------------------- Command "up" method -------------------
 
-:cli-up (
+:cli-up
     echo ^> Server UP with %PROJECT_ENV% environment
     echo ^> VARNUMBER1 = %VARNUMBER1%
     echo ^> VARNUMBER2 = %VARNUMBER2%
     echo ^> VARTEST = %VARTEST%
     goto end
-)
 
-:cli-up-args (
+:cli-up-args
     set COMMON_ARGS_KEY=%1
     set COMMON_ARGS_VALUE=%2
     if "%COMMON_ARGS_KEY%"=="--var1" (set VARNUMBER1=%COMMON_ARGS_VALUE%)
     if "%COMMON_ARGS_KEY%"=="--var2" (set VARNUMBER2=%COMMON_ARGS_VALUE%)
     if "%COMMON_ARGS_KEY%"=="--test" (set VARTEST=1)
     goto end
-)
 
-:cli-up-help (
+:cli-up-help
     echo This is a Command Line Interface with project %PROJECT_NAME%
     echo Startup Server
     echo.
@@ -173,51 +167,43 @@ goto end
     echo      --var2            Set VARNUMBER2 value.
     echo      --test            Set VARTEST is True ( 1 ).
     goto end
-)
 
-:: ------------------- Command "up"-"demo" method -------------------
+@rem ------------------- Command "up"-"demo" method -------------------
 
-:cli-up-demo (
+:cli-up-demo
     echo ^> SHOW DEMO INFORMATION with %PROJECT_ENV% environment
     goto end
-)
 
-:cli-up-demo-args (
+:cli-up-demo-args
     goto end
-)
 
-:cli-up-demo-help (
+:cli-up-demo-help
     echo This is a Command Line Interface with project %PROJECT_NAME%
     echo Show demo info
     echo.
     echo Options:
     echo      --help, -h        Show more information with UP Command.
     goto end
-)
 
 
-:: ------------------- Command "down" method -------------------
+@rem ------------------- Command "down" method -------------------
 
-:cli-down (
+:cli-down
     echo ^> Server DOWN
     goto end
-)
 
-:cli-down-args (
+:cli-down-args
     goto end
-)
 
-:cli-down-help (
+:cli-down-help
     echo This is a Command Line Interface with project %PROJECT_NAME%
     echo Close down Server
     echo.
     echo Options:
     echo      --help, -h        Show more information with UP Command.
     goto end
-)
 
-:: ------------------- End method-------------------
+@rem ------------------- End method-------------------
 
-:end (
+:end
     endlocal
-)
