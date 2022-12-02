@@ -66,25 +66,59 @@ cli [system parameter] [command] [command parameter]
 
 驗證與測試項目以 Windows 指令為主，Linux 與 Mac 請以 ```./cli.sh``` 執行
 
-+ CLI 腳本執行：```cli.bat```，輸出 cli 的說明文件
++ CLI 腳本執行：```cli```，輸出 cli 的說明文件
 + CLI 共通 Options
-    - ```cli.bat --help```，CLI 共通參數 ( 設定於 common-args 中 )；此操作會直接顯示說明文件
-    - ```cli.bat --prod```，CLI 主要參數 ( 設定於 cli-args 中 )；此操作會修改環境變數 ( PROJECT_ENV )
+    - ```cli --help```，CLI 共通參數 ( 設定於 common-args 中 )；此操作會直接顯示說明文件
+    - ```cli --prod```，CLI 主要參數 ( 設定於 cli-args 中 )；此操作會修改環境變數 ( PROJECT_ENV )
 + CLI 命令
-    - ```cli.bat up```，執行 up 命令 ( 設定於 cli-up 中 )；此操作會先處理過依據執行 ```common-args```、```cli-args```、```cli-up-args``` 後才執行
-    - ```cli.bat --prod up```，設定 CLI 主要參數並執行於 up 命令中；此操作可以看到輸出顯示環境變數 ( PROJECT_ENV ) 的改變
-    - ```cli.bat up --help```，設定 CLI 共通參數執行，已顯示 up 說明文件 ( 設定於 cli-up-help 中 )；需注意，共通參數原則等同改變最後呼叫函數，其優先度大過一切設定
+    - ```cli up```，執行 up 命令 ( 設定於 cli-up 中 )；此操作會先處理過依據執行 ```common-args```、```cli-args```、```cli-up-args``` 後才執行
+    - ```cli --prod up```，設定 CLI 主要參數並執行於 up 命令中；此操作可以看到輸出顯示環境變數 ( PROJECT_ENV ) 的改變
+    - ```cli up --help```，設定 CLI 共通參數執行，已顯示 up 說明文件 ( 設定於 cli-up-help 中 )；需注意，共通參數原則等同改變最後呼叫函數，其優先度大過一切設定
 + CLI 命令 Options
-    - ```cli.bat up --test```，執行 up 命令並宣告 ```--test``` 選項執行 ( 設定於 cli-up-args 中 )；此操作可以看到輸出 ```VARTEST = 1```
-    - ```cli.bat up --var1=123```，執行 up 命令並宣告 ```--var1``` 的內容 ( 設定於 cli-up-args 中 )；此操作可以看到輸出 ```VARNUMBER1 = 123```
-    - ```cli.bat up --var1=123 --test --var2=456```，執行 up 命令並宣告任意 Options，對於 Options 的執行順序是有左至右，若設計上有順序需要應加以說明
+    - ```cli up --test```，執行 up 命令並宣告 ```--test``` 選項執行 ( 設定於 cli-up-args 中 )；此操作可以看到輸出 ```VARTEST = 1```
+    - ```cli up --var1=123```，執行 up 命令並宣告 ```--var1``` 的內容 ( 設定於 cli-up-args 中 )；此操作可以看到輸出 ```VARNUMBER1 = 123```
+    - ```cli up --var1=123 --test --var2=456```，執行 up 命令並宣告任意 Options，對於 Options 的執行順序是有左至右，若設計上有順序需要應加以說明
 + CLI 階層命令
-    - ```cli.bat```，執行 cli 主命令，但預設主命令並不包括任何行為，僅可設定主要參數
-    - ```cli.bat up```，執行 cli 中的 up 命令 ( 設定於 cli-up 中 )
-    - ```cli.bat up demo```，執行 cli 中的 up 命令中的 demo 命令 ( 設定於 cli-up-demo 中 )，設計上 up 命令與參數皆不會被執行，僅有 ```common-args```、```cli-args```、```cli-up-demo-args```、```cli-up-demo``` 會被依序執行
+    - ```cli```，執行 cli 主命令，但預設主命令並不包括任何行為，僅可設定主要參數
+    - ```cli up```，執行 cli 中的 up 命令 ( 設定於 cli-up 中 )
+    - ```cli up demo```，執行 cli 中的 up 命令中的 demo 命令 ( 設定於 cli-up-demo 中 )，設計上 up 命令與參數皆不會被執行，僅有 ```common-args```、```cli-args```、```cli-up-demo-args```、```cli-up-demo``` 會被依序執行
 + CLI 錯誤指令
-    - ```cli.bat up1234```，執行 cli 中不存在的 up1234 命令
+    - ```cli up1234```，執行 cli 中不存在的 up1234 命令
     - 因不存在指令，會改執行 ```cli-help```，顯示說明文件
+
+## 命令介面 - 命令多檔
+
+此腳本是命令執行的介面殼，實際要執行的內容分散在目錄 ```shell``` 下，並以函數區分用途。
+
+```
+mcli [system parameter] [command] [command parameter]
+```
+
++ 命令字串解析
++ 可執行命令源自腳本目錄 ```shell```
++ 此項目限用於 linux 環境
+
+在本應用程式中，使用每個命令模組為單一檔案，其檔名結構為
+
++ ```[command].sh```，第一層命令
++ ```[command]-[sub command].sh```，第二層命令，隸屬於第一層命令下的子功能
++ ```[command]-[2-layer command]-...-[N-layer command].sh```，第 N 層命令，隸屬於第 N-1 層命令下的子功能
+
+其中共有四個函數
+
++ ```action```  : 命令本身的腳本
++ ```args```    : 命令腳本的選項功能處理函數
++ ```short```   : 命令腳本的短說明函數
++ ```help```    : 命令腳本的說明函數
+
+若命令模組缺少其中一個函數，在執行階段會發生無法正確呼叫函數而導致系統拋出錯誤訊息。
+
+### 測試事項
+
+驗證與測試項目以 Windows 指令為主，Linux 與 Mac 請以 ```./mcli.sh``` 執行
+
++ CLI 腳本執行：```mcli.sh```
++ 所有測試項目與 ```cli``` 項目相同
 
 ### 其他相關工具
 
