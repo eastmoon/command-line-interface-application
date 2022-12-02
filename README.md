@@ -43,6 +43,15 @@ cli [system parameter] [command] [command parameter]
 
 若命令模組缺少其中一個函數，在執行階段會發生無法正確呼叫函數而導致系統拋出錯誤訊息。
 
+### 開發環境
+
+本專案預設於 Windows 環境設計，對於各開發與測試環境參考如下：
+
++ batch script 請使用 Command prompt 執行，若為 linux 作業系統可使用 ```conf/docker``` 的 wine 環境模擬執行
++ bash script 請使用 ```dev.bat``` 藉此啟動 Dokcer 來產生可編寫 bash 的 linux 環境
+
+需注意，由於 wine 環境中執行會因為 findstr 指令不存在而無法正確執行，對此仍需調查原因
+
 ### 使用事項
 
 + ```cli.bat``` 請於 Windows 作業系統環境下測試
