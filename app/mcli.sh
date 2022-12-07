@@ -1,5 +1,5 @@
 #
-# Copyright 2020 the original author jacky.eastmoon
+# Copyright 2022 the original author jacky.eastmoon
 #
 # All commad module need 3 method :
 # [command]        : Command script
