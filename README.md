@@ -113,6 +113,10 @@ mcli [system parameter] [command] [command parameter]
 
 若命令模組缺少其中一個函數，在執行階段會發生無法正確呼叫函數而導致系統拋出錯誤訊息。
 
+此外可以使用屬性控制或調整命令執行流程
+
++ ```#@STOP-CLI-PARSER```  : 停止繼續解析並執行目前腳本，後續為解析命令以參數方式傳入 ```action``` 函數
+
 ### 測試事項
 
 驗證與測試項目以 Windows 指令為主，Linux 與 Mac 請以 ```./mcli.sh``` 執行

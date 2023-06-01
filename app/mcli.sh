@@ -43,8 +43,51 @@ PROJECT_ENV="dev"
 
 # Command Parser
 function main() {
+    # Parse assign variable which input into main function
+    # It will parse input assign variable and stop at first command ( COMMAND ), and re-group two list variable, option list before command ( COMMAND_BC_AGRS ), option list after command ( COMMAND_AC_AGRS ).
     argv-parser ${@}
-    for arg in ${COMMAND_BC_AGRS[@]}
+    # Run main function option, which option control come from "option list before command" ( COMMAND_BC_AGRS ).
+    main-args ${COMMAND_BC_AGRS[@]}
+    # Execute command
+    if [ -n ${COMMAND} ];
+    then
+        # If exist command, then re-group breadcrumb that is a string struct by command.
+        BREADCRUMB=${BREADCRUMB}-${COMMAND}
+        # And if exist a shell file has a name same with breadcrumb, then it is a target file we need to run.
+        if [ $(find ${CLI_SHELL_DIRECTORY} -type f -iname "${BREADCRUMB#*-}.sh" | wc -l) -gt 0 ];
+        then
+            # Generate shell file full path.
+            SHELL_FILE=${CLI_SHELL_DIRECTORY}/${BREADCRUMB#*-}.sh
+            # Run main function attribute option, which option control come from shell file attribute ( #@ATTRIBUTE=VALUE ).
+            main-attr
+            # If attribute ( stop-cli-parser ) not exist, then run main function with "option list after command" ( COMMAND_AC_AGRS ).
+            # Main function will run at nested structure, it will search full command breadcrumb come from use input assign variable.
+            #
+            # If attribute ( stop-cli-parser ) exist, it mean stop search full command breadcrumb,
+            # and execute current shell file, and "option list after command" ( COMMAND_AC_AGRS ) become shell file assign variable .
+            if [ -z ${ATTR_STOP_CLI_PARSER} ];
+            then
+                main ${COMMAND_AC_AGRS[@]}
+            else
+                FULL_COMMAND=${COMMAND_AC_AGRS[@]}
+                argv-parser ${FULL_COMMAND}
+                main-args ${COMMAND_BC_AGRS[@]}
+                main-exec ${FULL_COMMAND}
+            fi
+        else
+            # If not exist a shell file, then show help content which in cli file or current shell file
+            [ -z ${SHELL_FILE} ] &&  cli-help || source ${SHELL_FILE} help
+        fi
+    else
+        # If not exist command, it mean current main function input assign variable only have option, current breadcrumb variable was struct by full command,
+        # then execute function ( in cli or shell file ) with breadcrumb variable.
+        main-exec
+    fi
+}
+
+# Main function, args running function.
+function main-args() {
+    for arg in ${@}
     do
         IFS='=' read -ra ADDR <<< "${arg}"
         key=${ADDR[0]}
@@ -52,27 +95,36 @@ function main() {
         [ -z ${SHELL_FILE} ] && eval ${BREADCRUMB}-args ${key} ${value} || source ${SHELL_FILE} args ${key} ${value}
         common-args ${key} ${value}
     done
-    # Execute command
-    if [ ! -z ${COMMAND} ];
+}
+
+# Main function, attribute running function.
+function main-attr() {
+    if [[ -n ${SHELL_FILE} && -e ${SHELL_FILE} ]];
     then
-        BREADCRUMB=${BREADCRUMB}-${COMMAND}
-        if [ $(find ${CLI_SHELL_DIRECTORY} -type f -iname "${BREADCRUMB#*-}.sh" | wc -l) -gt 0 ];
+        if [ $(grep "#@" ${SHELL_FILE} | wc -l) -gt 0 ];
         then
-            SHELL_FILE=${CLI_SHELL_DIRECTORY}/${BREADCRUMB#*-}.sh
-            main ${COMMAND_AC_AGRS[@]}
-        else
-            [ -z ${SHELL_FILE} ] &&  cli-help || source ${SHELL_FILE} help
-        fi
-    else
-        if [ -z ${SHELL_FILE} ];
-        then
-            [ -z ${SHOW_HELP} ] && eval ${BREADCRUMB}-help || eval ${BREADCRUMB}
-        else
-            [ ! -z ${SHOW_HELP} ] && source ${SHELL_FILE} help || source ${SHELL_FILE} action
+            for attr in $(grep "#@" ${SHELL_FILE})
+            do
+                IFS='=' read -ra ADDR <<< "${attr//#@/}"
+                key=${ADDR[0]}
+                value=${ADDR[1]}
+                common-attr ${key} ${value}
+            done
         fi
     fi
 }
 
+# Main function, target function execute.
+function main-exec() {
+    if [ -z ${SHELL_FILE} ];
+    then
+        [ -z ${SHOW_HELP} ] && eval ${BREADCRUMB}-help || eval ${BREADCRUMB}
+    else
+        [ ! -z ${SHOW_HELP} ] && source ${SHELL_FILE} help || source ${SHELL_FILE} action ${@}
+    fi
+}
+
+# Common args list function
 function common-args() {
     key=${1}
     value=${2}
@@ -86,6 +138,19 @@ function common-args() {
     esac
 }
 
+# Common attribute list function
+function common-attr() {
+    key=${1}
+    value=${2}
+    case ${key} in
+        "STOP-CLI-PARSER")
+            ATTR_STOP_CLI_PARSER=1
+            ;;
+    esac
+}
+
+# Parse args variable
+# it will search input assign variable, then find first command ( COMMAND ), option list before command ( COMMAND_BC_AGRS ), and option list after command ( COMMAND_AC_AGRS ).
 function argv-parser() {
     COMMAND=""
     COMMAND_BC_AGRS=()
@@ -107,7 +172,6 @@ function argv-parser() {
         fi
     done
 }
-
 
 # ------------------- Main method -------------------
 
