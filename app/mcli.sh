@@ -49,7 +49,7 @@ function main() {
     # Run main function option, which option control come from "option list before command" ( COMMAND_BC_AGRS ).
     main-args ${COMMAND_BC_AGRS[@]}
     # Execute command
-    if [ -n ${COMMAND} ];
+    if [ -n ${COMMAND} && "${COMMAND}" != ""  ];
     then
         # If exist command, then re-group breadcrumb that is a string struct by command.
         BREADCRUMB=${BREADCRUMB}-${COMMAND}
