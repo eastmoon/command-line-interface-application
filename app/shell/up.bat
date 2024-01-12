@@ -1,4 +1,5 @@
 @rem ------------------- batch setting -------------------
+@echo off
 
 @rem ------------------- declare variable -------------------
 if not defined VARNUMBER1 ( set VARNUMBER1=0 )

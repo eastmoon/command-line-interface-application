@@ -1,4 +1,7 @@
 @rem ------------------- batch setting -------------------
+@echo off
+
+@rem ------------------- batch attribute setting -------------------
 ::@STOP-CLI-PARSER
 ::@ATTRIBUTE=1
 
@@ -19,7 +22,7 @@ goto end
     goto end
 
 :short
-    echo "Execute some action"
+    echo Execute some action
     goto end
 
 :help
