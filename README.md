@@ -96,9 +96,10 @@ mcli [system parameter] [command] [command parameter]
 
 + 命令字串解析
 + 可執行命令源自腳本目錄 ```shell```
-+ 此項目限用於 linux 環境
 
-在本應用程式中，使用每個命令模組為單一檔案，其檔名結構為
+以下說明以 Linux 的 ".sh" 檔為範本，若為 Windows 則改用 ".bat" 檔
+
+在本應用程式中，使用每個命令模組為單一檔案，其檔名結構如下
 
 + ```[command].sh```，第一層命令
 + ```[command]-[sub command].sh```，第二層命令，隸屬於第一層命令下的子功能
