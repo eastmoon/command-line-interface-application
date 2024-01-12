@@ -41,7 +41,7 @@ PROJECT_ENV="dev"
 
 # ------------------- declare function -------------------
 
-# Command Parser
+# Command-line-interface main entrypoint.
 function main() {
     # Parse assign variable which input into main function
     # It will parse input assign variable and stop at first command ( COMMAND ), and re-group two list variable, option list before command ( COMMAND_BC_AGRS ), option list after command ( COMMAND_AC_AGRS ).
@@ -124,6 +124,32 @@ function main-exec() {
     fi
 }
 
+# Parse args variable
+# it will search input assign variable, then find first command ( COMMAND ), option list before command ( COMMAND_BC_AGRS ), and option list after command ( COMMAND_AC_AGRS ).
+function argv-parser() {
+    COMMAND=""
+    COMMAND_BC_AGRS=()
+    COMMAND_AC_AGRS=()
+    is_find_cmd=0
+    for arg in ${@}
+    do
+        if [ ${is_find_cmd} -eq 0 ]
+        then
+            if [[ ${arg} =~ -+[a-zA-Z1-9]* ]]
+            then
+                COMMAND_BC_AGRS+=(${arg})
+            else
+                COMMAND=${arg}
+                is_find_cmd=1
+            fi
+        else
+            COMMAND_AC_AGRS+=(${arg})
+        fi
+    done
+}
+
+# ------------------- command-line-interface common args and attribute method -------------------
+
 # Common args list function
 function common-args() {
     key=${1}
@@ -147,30 +173,6 @@ function common-attr() {
             ATTR_STOP_CLI_PARSER=1
             ;;
     esac
-}
-
-# Parse args variable
-# it will search input assign variable, then find first command ( COMMAND ), option list before command ( COMMAND_BC_AGRS ), and option list after command ( COMMAND_AC_AGRS ).
-function argv-parser() {
-    COMMAND=""
-    COMMAND_BC_AGRS=()
-    COMMAND_AC_AGRS=()
-    is_find_cmd=0
-    for arg in ${@}
-    do
-        if [ ${is_find_cmd} -eq 0 ]
-        then
-            if [[ ${arg} =~ -+[a-zA-Z1-9]* ]]
-            then
-                COMMAND_BC_AGRS+=(${arg})
-            else
-                COMMAND=${arg}
-                is_find_cmd=1
-            fi
-        else
-            COMMAND_AC_AGRS+=(${arg})
-        fi
-    done
 }
 
 # ------------------- Main method -------------------
