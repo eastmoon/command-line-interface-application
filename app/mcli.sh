@@ -23,7 +23,7 @@ CLI_DIRECTORY=${PWD}
 CLI_FILE=${BASH_SOURCE##*/}
 CLI_FILENAME=${CLI_FILE%.*}
 CLI_FILEEXTENSION=${CLI_FILE##*.}
-CLI_SHELL_DIRECTORY=${PWD}/shell
+CLI_SHELL_DIRECTORY=${CLI_DIRECTORY}/shell
 SHELL_FILE=
 
 # ------------------- declare CLI variable -------------------
@@ -49,7 +49,7 @@ function main() {
     # Run main function option, which option control come from "option list before command" ( COMMAND_BC_AGRS ).
     main-args ${COMMAND_BC_AGRS[@]}
     # Execute command
-    if [ -n ${COMMAND} && "${COMMAND}" != ""  ];
+    if [[ -n ${COMMAND} && "${COMMAND}" != "" ]];
     then
         # If exist command, then re-group breadcrumb that is a string struct by command.
         BREADCRUMB=${BREADCRUMB}-${COMMAND}
@@ -148,9 +148,33 @@ function argv-parser() {
     done
 }
 
+# Parse mcli.ini configuration file
+function ini-parser() {
+    if [ -e ${CLI_DIRECTORY}/mcli.ini ];
+    then
+        while read -r line; do
+            IFS='=' read -ra ADDR <<< "${line}"
+            key=${ADDR[0]}
+            value=${ADDR[1]}
+            common-ini ${key} ${value}
+        done < ${CLI_DIRECTORY}/mcli.ini
+    fi
+}
+
 # ------------------- command-line-interface common args and attribute method -------------------
 
-# Common args list function
+# Common - ini configuration process
+function common-ini() {
+    key=${1}
+    value=${2}
+    case ${key} in
+        "SHELL_DIR")
+            CLI_SHELL_DIRECTORY=${CLI_DIRECTORY}/${value//\\/\/}
+            ;;
+    esac
+}
+
+# Common - args process
 function common-args() {
     key=${1}
     value=${2}
@@ -164,7 +188,7 @@ function common-args() {
     esac
 }
 
-# Common attribute list function
+# Common - attribute process
 function common-attr() {
     key=${1}
     value=${2}
@@ -224,4 +248,5 @@ function command-description() {
 
 # ------------------- execute script -------------------
 
+ini-parser
 main ${@}

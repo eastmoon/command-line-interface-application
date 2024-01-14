@@ -53,6 +53,7 @@ set PROJECT_ENV=dev
 
 @rem ------------------- execute script -------------------
 
+call :ini-parser
 call :main %*
 goto end
 
@@ -173,9 +174,30 @@ goto end
     )
     goto end
 
+@rem Parse mcli.ini configuration file
+:ini-parser
+    if exist mcli.ini (
+        for /f "usebackq delims=" %%a in ("mcli.ini") do (
+            set ln=%%a
+            if not "x!ln:~0,1!"=="x[" (
+                for /f "tokens=1,2 delims==" %%b in ("!ln!") do (
+                    call :common-ini %%b %%c
+                )
+            )
+        )
+    )
+    goto end
+
 @rem ------------------- command-line-interface common args and attribute method -------------------
 
-@rem Common args list function
+@rem Common - ini configuration process
+:common-ini
+    set KEY=%1
+    set VALUE=%2
+    if "%KEY%"=="SHELL_DIR" (set CLI_SHELL_DIRECTORY=%CLI_DIRECTORY%%VALUE:/=\%)
+    echo %CLI_SHELL_DIRECTORY%
+
+@rem Common - args process
 :common-args
     set KEY=%1
     set VALUE=%2
@@ -183,7 +205,7 @@ goto end
     if "%KEY%"=="--help" (set SHOW_HELP=1)
     goto end
 
-@rem Common attribute list function
+@rem Common - attribute process
 :common-attr
     set KEY=%1
     set VALUE=%2

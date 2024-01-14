@@ -118,6 +118,13 @@ mcli [system parameter] [command] [command parameter]
 
 + ```#@STOP-CLI-PARSER```  : 停止繼續解析並執行目前腳本，後續為解析命令以參數方式傳入 ```action``` 函數
 
+### 參數設定
+
+基於共通變數管理，所有相關工作流控制變數設定於 ```mcli.ini``` 檔案中，此檔共用於 ```mcli.bat``` 與 ```mcli.sh```；此配置檔有以下設計要點：
+
++ 配置檔不檢查區段 ```[]```，所有變數皆為 key-value 儲存
++ 相應 key 的處理設計於 ```common-ini``` 函數
+
 ### 測試事項
 
 驗證與測試項目以 Windows 指令為主，Linux 與 Mac 請以 ```./mcli.sh``` 執行
@@ -130,3 +137,5 @@ mcli [system parameter] [command] [command parameter]
 + [make script](https://foreachsam.github.io/book-util-make/book/content/example/make-scripts/)
    - [Make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm)
 + [Shell Script Compiler](https://github.com/neurobin/shc)
++ [INI file](https://en.wikipedia.org/wiki/INI_file)
+    - [What Is an INI File?](https://www.lifewire.com/how-to-open-edit-ini-files-2622755)
