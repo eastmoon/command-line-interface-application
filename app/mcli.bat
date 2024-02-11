@@ -49,7 +49,6 @@ set SHOW_HELP=
 for %%a in ("%cd%") do (
     set PROJECT_NAME=%%~na
 )
-set PROJECT_ENV=dev
 
 @rem ------------------- execute script -------------------
 
@@ -216,13 +215,11 @@ goto end
 
 :cli
     goto cli-help
-    ::call %CLI_SHELL_DIRECTORY%/up.bat help
     goto end
 
 :cli-args
     set COMMON_ARGS_KEY=%1
     set COMMON_ARGS_VALUE=%2
-    if "%COMMON_ARGS_KEY%"=="--prod" (set PROJECT_ENV=prod)
     goto end
 
 :cli-help
