@@ -53,8 +53,13 @@ function main() {
     if [ ! -z ${COMMAND} ];
     then
         BREADCRUMB=${BREADCRUMB}-${COMMAND}
-        if [ "$(type -t ${BREADCRUMB})" == "function" ];
-        then
+        IS_FUNCTION=
+        if [ -z ${ZSH_NAME} ]; then
+            [ "$(type -t ${BREADCRUMB})" = "function" ] && IS_FUNCTION=1 || true
+        else
+            [ "$(whence -w ${BREADCRUMB} | awk '{print $2}')" = "function" ] && IS_FUNCTION=1 || true
+        fi
+        if [ ! -z IS_FUNCTION ]; then
             main ${COMMAND_AC_AGRS[@]}
         else
             cli-help
