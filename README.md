@@ -135,8 +135,8 @@ mcli [system parameter] [command] [command parameter]
 
 使用方式參考腳本
 
-+ exec 使用 ```ATTR_STOP_CLI_PARSER``` 變數和屬性設定變數，[windows](./shell/exec.bat)、[linux](./shell/exec.sh)
-+ up 使用屬性設定預設值並用參數替換，[windows](./shell/up.bat)、[linux](./shell/up.sh)
++ exec 使用 ```ATTR_STOP_CLI_PARSER``` 變數和屬性設定變數，[windows](./app/shell/exec.bat)、[linux](./app/shell/exec.sh)
++ up 使用屬性設定預設值並用參數替換，[windows](./app/shell/up.bat)、[linux](./app/shell/up.sh)
 
 ### 參數設定
 
