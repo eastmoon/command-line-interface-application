@@ -33,7 +33,7 @@ set CLI_DIRECTORY=%~dp0
 set CLI_FILE=%~n0%~x0
 set CLI_FILENAME=%~n0
 set CLI_FILEEXTENSION=%~x0
-set CLI_SHELL_DIRECTORY=%CLI_DIRECTORY%shell
+set CLI_SHELL_DIRECTORY=%CLI_DIRECTORY%
 
 @rem ------------------- declare CLI variable -------------------
 
@@ -52,7 +52,9 @@ for %%a in ("%cd%") do (
 
 @rem ------------------- execute script -------------------
 
+@rem ini file parser
 call :ini-parser
+@rem Execute entrypoint function
 call :main %*
 goto end
 
@@ -175,12 +177,14 @@ goto end
 
 @rem Parse mcli.ini configuration file
 :ini-parser
-    if exist mcli.ini (
-        for /f "usebackq delims=" %%a in ("mcli.ini") do (
+    if exist %CLI_FILENAME%.ini (
+        for /f "usebackq delims=" %%a in ("%CLI_FILENAME%.ini") do (
             set ln=%%a
             if not "x!ln:~0,1!"=="x[" (
-                for /f "tokens=1,2 delims==" %%b in ("!ln!") do (
-                    call :common-ini %%b %%c
+                for /f "tokens=1,2 delims=;" %%b in ("!ln!") do (
+                    for /f "tokens=1,2 delims==" %%c in ("%%b") do (
+                        call :common-ini %%c %%d
+                    )
                 )
             )
         )
@@ -193,8 +197,7 @@ goto end
 :common-ini
     set KEY=%1
     set VALUE=%2
-    if "%KEY%"=="SHELL_DIR" (set CLI_SHELL_DIRECTORY=%CLI_DIRECTORY%%VALUE:/=\%)
-    echo %CLI_SHELL_DIRECTORY%
+    if "%KEY%"=="COMMAND_SCRIPT_DIR" (set CLI_SHELL_DIRECTORY=%CLI_DIRECTORY%%VALUE:/=\%)
 
 @rem Common - args process
 :common-args

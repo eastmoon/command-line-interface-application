@@ -23,7 +23,7 @@ CLI_DIRECTORY=${PWD}
 CLI_FILE=${BASH_SOURCE##*/}
 CLI_FILENAME=${CLI_FILE%.*}
 CLI_FILEEXTENSION=${CLI_FILE##*.}
-CLI_SHELL_DIRECTORY=${CLI_DIRECTORY}/shell
+CLI_SHELL_DIRECTORY=${CLI_DIRECTORY}
 SHELL_FILE=
 
 # ------------------- declare CLI variable -------------------
@@ -38,9 +38,6 @@ SHOW_HELP=
 
 PROJECT_NAME=${PWD##*/}
 PROJECT_ENV="dev"
-
-# ------------------- declare import library -------------------
-source ${CLI_SHELL_DIRECTORY}/utils/tools.sh
 
 # ------------------- declare function -------------------
 
@@ -153,14 +150,14 @@ function argv-parser() {
 
 # Parse mcli.ini configuration file
 function ini-parser() {
-    if [ -e ${CLI_DIRECTORY}/mcli.ini ];
+    if [ -e ${CLI_DIRECTORY}/${CLI_FILENAME}.ini ];
     then
         while read -r line; do
-            IFS='=' read -ra ADDR <<< "${line}"
+            IFS='=' read -ra ADDR <<< "${line%\;*}"
             key=${ADDR[0]}
             value=${ADDR[1]}
             common-ini ${key} ${value}
-        done < ${CLI_DIRECTORY}/mcli.ini
+        done < ${CLI_DIRECTORY}/${CLI_FILENAME}.ini
     fi
 }
 
@@ -171,7 +168,7 @@ function common-ini() {
     key=${1}
     value=${2}
     case ${key} in
-        "SHELL_DIR")
+        "COMMAND_SCRIPT_DIR")
             CLI_SHELL_DIRECTORY=${CLI_DIRECTORY}/${value//\\/\/}
             ;;
     esac
@@ -230,5 +227,9 @@ function cli-help() {
 
 # ------------------- execute script -------------------
 
+# ini file parser
 ini-parser
+# Import library
+source ${CLI_SHELL_DIRECTORY}/utils/tools.sh
+# Execute entrypoint function
 main ${@}
