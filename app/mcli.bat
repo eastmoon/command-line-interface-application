@@ -52,8 +52,10 @@ for %%a in ("%cd%") do (
 
 @rem ------------------- execute script -------------------
 
-@rem ini file parser
+@rem .ini file parser
 call :ini-parser
+@rem .rc file parser
+call :rc-parser
 @rem Execute entrypoint function
 call :main %*
 goto end
@@ -194,6 +196,23 @@ goto end
     )
     goto end
 
+@rem Parse runtime configuration file
+@rem A variable in runtime configuration file, will all setting in global variable, before main action execute.
+:rc-parser
+    set RC_FILENAME=%CLI_FILENAME%.rc
+    if not "%1" == "" (set RC_FILENAME=%1)
+    if exist %RC_FILENAME% (
+        for /f "usebackq delims=" %%a in ("%RC_FILENAME%") do (
+            set ln=%%a
+            if not "x!ln:~0,1!"=="x#" (
+                for /f "tokens=1,2 delims==" %%b in ("!ln!") do (
+                    set RC_%%b=%%c
+                )
+            )
+        )
+    )
+    goto end
+
 @rem ------------------- command-line-interface common args and attribute method -------------------
 
 @rem Common - ini configuration process
@@ -208,6 +227,7 @@ goto end
     set VALUE=%2
     if "%KEY%"=="-h" (set SHOW_HELP=1)
     if "%KEY%"=="--help" (set SHOW_HELP=1)
+    if "%KEY%"=="--rc" (call :rc-parser %2)
     goto end
 
 @rem ------------------- Main method -------------------

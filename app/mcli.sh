@@ -149,7 +149,8 @@ function argv-parser() {
     done
 }
 
-# Parse mcli.ini configuration file
+# Parse ini configuration file
+# A variable in ini configuration file, will setting variable by common-ini function.
 function ini-parser() {
     if [ -e ${CLI_DIRECTORY}/${CLI_FILENAME}.ini ];
     then
@@ -159,6 +160,28 @@ function ini-parser() {
             value=${ADDR[1]}
             common-ini ${key} ${value}
         done < ${CLI_DIRECTORY}/${CLI_FILENAME}.ini
+    fi
+}
+
+# Parse runtime configuration file
+# A variable in runtime configuration file, will all setting in global variable, before main action execute.
+function rc-parser() {
+    RC_FILENAME=${CLI_DIRECTORY}/${CLI_FILENAME}.rc
+    [ ! -z ${1} ] && RC_FILENAME=${1}
+    if [ -e ${RC_FILENAME} ];
+    then
+        while read -r line; do
+            if [[ ! ${line} =~ ^# ]];
+            then
+                IFS='=' read -ra ADDR <<< "${line}"
+                key=${ADDR[0]}
+                value=${ADDR[1]}
+                if [ "${key}" != "" ];
+                then
+                    export RC_${key}="${value}"
+                fi
+            fi
+        done < ${RC_FILENAME}
     fi
 }
 
@@ -185,6 +208,9 @@ function common-args() {
             ;;
         "-h")
             SHOW_HELP=1
+            ;;
+        "--rc")
+            rc-parser ${value}
             ;;
     esac
 }
@@ -217,8 +243,10 @@ function cli-help() {
 
 # ------------------- execute script -------------------
 
-# ini file parser
+# .ini file parser
 ini-parser
+# .rc file parser
+rc-parser
 # Import library
 source ${CLI_SHELL_DIRECTORY}/utils/tools.sh
 # Execute entrypoint function

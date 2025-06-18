@@ -133,14 +133,16 @@ mcli [system parameter] [command] [command parameter]
 
 + ```#@STOP-CLI-PARSER```、```::@STOP-CLI-PARSER```  : 會設定 ```ATTR_STOP_CLI_PARSER``` 變數，其功能會停止繼續解析並執行目前腳本，並將未解析命令以參數方式傳入 ```action``` 函數
 
-使用方式參考腳本
+使用方式參考腳本：
 
 + exec 使用 ```ATTR_STOP_CLI_PARSER``` 變數和屬性設定變數，[windows](./app/shell/exec.bat)、[linux](./app/shell/exec.sh)
 + up 使用屬性設定預設值並用參數替換，[windows](./app/shell/up.bat)、[linux](./app/shell/up.sh)
 
-### 參數設定
+設計上，attr 用於宣告此腳本需要的區域變數。
 
-共通變數管理，所有相關工作流控制變數設定於 ```mcli.ini``` 檔案中，此檔共用於 ```mcli.bat``` 與 ```mcli.sh```；此配置檔有以下設計要點：
+### 共通變數設定
+
+共通變數配置使用 ini 檔案格式，所有相關工作流控制變數設定於 ```mcli.ini``` 檔案中，此檔共用於 ```mcli.bat``` 與 ```mcli.sh```；此配置檔有以下設計要點：
 
 + 配置檔不檢查區段 ```[]```，所有變數皆為 key-value 儲存
 + 相應 key 的處理設計於 ```common-ini``` 函數
@@ -150,6 +152,29 @@ mcli [system parameter] [command] [command parameter]
 + ini 檔案名稱是依據 CLI 檔名決定，因此，若 CLI 改為 ```do.bat```，則會呼叫 ```do.ini```
 + ini 檔案應設定為 LF 檔案格式，依此兼容 windows 與 linux 的使用環境
 + ini 檔案的註解 ```;``` 後的內容會被移除後才處理
++ ini 檔案若不存在則不會有任何宣告
+
+設計上，ini 用於宣告需演算處理的共通變數。
+
+### 執行變數設定
+
+執行變數配置使用 rc 副檔名，所有相關工作流控制變數設定於 ```mcli.rc``` 檔案中，此檔共用於 ```mcli.bat``` 與 ```mcli.sh```；此配置檔有以下設計要點：
+
++ 註解使用 ```#```
++ 變數皆為 ```key```=```value``` 儲存
++ 變數實際宣告為 ```RC_${key}=${value}```
+    - 若在 ```mcli.rc``` 有個變數設置為 ```VALUE=123``` 則執行時變數名稱為 ```RC_VALUE```。
++ 執行變數可以使用 ```--rc=[RC_file_path]``` 擴增或覆蓋變數
+    - 若執行時使用 ```mcli --rc=demo.rc```，則會先讀取 ```mcil.rc``` 後讀取 ```demo.rc```，若變數名稱相同則由後覆蓋前。
+
+**注意事項**
+
++ rc 檔案名稱是依據 CLI 檔名決定，因此，若 CLI 改為 ```do.bat```，則會呼叫 ```do.rc```
++ rc 檔案應設定為 LF 檔案格式，依此兼容 windows 與 linux 的使用環境
++ rc 檔案的註解 ```#``` 後的內容會被移除後才處理
++ rc 檔案若不存在則不會有任何宣告
+
+設計上，rc 用於宣告執行階段的共通變數。
 
 ### 測試事項
 
