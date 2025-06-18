@@ -43,7 +43,7 @@ function help {
     echo "Startup Server"
     echo ""
     echo "Options:"
-    echo "    --help, -h        Show more information with UP Command."
+    echo "    --help, -h        Show more command information."
     echo "    --var1            Set VARNUMBER1 value."
     echo "    --var2            Set VARNUMBER2 value."
     echo "    --test            Set VARTEST is True ( 1 )."

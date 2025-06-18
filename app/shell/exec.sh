@@ -26,7 +26,7 @@ function help {
     echo "Execute some action"
     echo ""
     echo "Options:"
-    echo "    --help, -h        Show more information with UP Command."
+    echo "    --help, -h        Show more command information."
     command-description ${BASH_SOURCE##*/}
 }
 

@@ -36,7 +36,7 @@ goto end
     echo Execute some action
     echo.
     echo Options:
-    echo     --help, -h        Show more information with UP Command.
+    echo     --help, -h        Show more command information.
     call %CLI_SHELL_DIRECTORY%\utils\tools.bat command-description %~n0
     goto end
 
