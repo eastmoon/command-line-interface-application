@@ -141,8 +141,11 @@ goto end
     for /f "tokens=1" %%p in ('findstr /bi /c:"::@" %SHELL_FILE%') do (
         for /f "tokens=1,2 delims==" %%i in ("%%p") do (
             set ATT_NAME=%%i
+            set ATT_NAME=!ATT_NAME:::@=!
+            set ATT_NAME=!ATT_NAME:-=_!
             set ATT_VALUE=%%j
-            call :common-attr !ATT_NAME:::@=! !ATT_VALUE!
+            if "%%i" == "%%p" (set ATT_VALUE=1)
+            set ATTR_!ATT_NAME!=!ATT_VALUE!
         )
     )
     goto end
@@ -205,13 +208,6 @@ goto end
     set VALUE=%2
     if "%KEY%"=="-h" (set SHOW_HELP=1)
     if "%KEY%"=="--help" (set SHOW_HELP=1)
-    goto end
-
-@rem Common - attribute process
-:common-attr
-    set KEY=%1
-    set VALUE=%2
-    if "%KEY%"=="STOP-CLI-PARSER" (set ATTR_STOP_CLI_PARSER=1)
     goto end
 
 @rem ------------------- Main method -------------------

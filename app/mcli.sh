@@ -108,7 +108,8 @@ function main-attr() {
                 IFS='=' read -ra ADDR <<< "${attr//#@/}"
                 key=${ADDR[0]}
                 value=${ADDR[1]}
-                common-attr ${key} ${value}
+                [[ ! ${attr} =~ "=" ]] && value=1 || true
+                export ATTR_${key//-/_}="${value}"
             done
         fi
     fi
@@ -184,17 +185,6 @@ function common-args() {
             ;;
         "-h")
             SHOW_HELP=1
-            ;;
-    esac
-}
-
-# Common - attribute process
-function common-attr() {
-    key=${1}
-    value=${2}
-    case ${key} in
-        "STOP-CLI-PARSER")
-            ATTR_STOP_CLI_PARSER=1
             ;;
     esac
 }

@@ -118,9 +118,25 @@ mcli [system parameter] [command] [command parameter]
 
 ### 命令屬性
 
-若命令模組會對流程的變動或提供額外參數，可設定命令屬性來設置或配置參數；例如以下屬性：
+若命令模組會對流程的變動或提供額外參數，可設定命令屬性來設置或配置參數，參數結構為
 
-+ ```#@STOP-CLI-PARSER```  : 停止繼續解析並執行目前腳本，後續為解析命令以參數方式傳入 ```action``` 函數
++ ```::@[ATTRIBUTE_NAME]=[VALUE]``` for Windows
++ ```#@[ATTRIBUTE_NAME]=[VALUE]``` for Linux
+
+參數會將值宣告為變數，其規則如下：
+
++ ```::@ATT-NAME``` 會產生變數 ATTR_ATT_NAME 為真
++ ```::@ATT-NAME=``` 會產生變數為 ATTR_ATT_NAME 為空
++ ```::@ATT-NAME=1234``` 會產生變數為 ATTR_ATT_NAME 其值為 1234
+
+例如以下屬性：
+
++ ```#@STOP-CLI-PARSER```、```::@STOP-CLI-PARSER```  : 會設定 ```ATTR_STOP_CLI_PARSER``` 變數，其功能會停止繼續解析並執行目前腳本，並將未解析命令以參數方式傳入 ```action``` 函數
+
+使用方式參考腳本
+
++ exec 使用 ```ATTR_STOP_CLI_PARSER``` 變數和屬性設定變數，[windows](./shell/exec.bat)、[linux](./shell/exec.sh)
++ up 使用屬性設定預設值並用參數替換，[windows](./shell/up.bat)、[linux](./shell/up.sh)
 
 ### 參數設定
 

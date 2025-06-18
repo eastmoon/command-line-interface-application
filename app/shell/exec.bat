@@ -1,9 +1,11 @@
 @rem ------------------- batch setting -------------------
 @echo off
 
-@rem ------------------- batch attribute setting -------------------
+@rem ------------------- declare script attribute -------------------
 ::@STOP-CLI-PARSER
-::@ATTRIBUTE=1
+::@VALUE=123
+::@BOOLEAN-TRUE
+::@BOOLEAN-FALSE=
 
 @rem ------------------- declare variable -------------------
 
@@ -16,6 +18,10 @@ goto end
 
 :action
     echo ^> Exec : %*
+    echo ATTR_STOP_CLI_PARSER : %ATTR_STOP_CLI_PARSER%
+    echo VALUE : %ATTR_VALUE%
+    if defined ATTR_BOOLEAN_TRUE (echo BOOLEAN-TRUE exist) else (echo BOOLEAN-TRUE not exist)
+    if defined ATTR_BOOLEAN_FALSE (echo BOOLEAN-FALSE exist) else (echo BOOLEAN-FALSE not exist)
     goto end
 
 :args
