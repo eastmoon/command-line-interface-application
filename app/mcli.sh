@@ -45,9 +45,9 @@ PROJECT_ENV="dev"
 function main() {
     # Parse assign variable which input into main function
     # It will parse input assign variable and stop at first command ( COMMAND ), and re-group two list variable, option list before command ( COMMAND_BC_AGRS ), option list after command ( COMMAND_AC_AGRS ).
-    argv-parser ${@}
+    argv-parser "${@}"
     # Run main function option, which option control come from "option list before command" ( COMMAND_BC_AGRS ).
-    main-args ${COMMAND_BC_AGRS[@]}
+    main-args "${COMMAND_BC_AGRS[@]}"
     # Execute command
     if [[ -n ${COMMAND} && "${COMMAND}" != "" ]];
     then
@@ -67,12 +67,12 @@ function main() {
             # and execute current shell file, and "option list after command" ( COMMAND_AC_AGRS ) become shell file assign variable .
             if [ -z ${ATTR_STOP_CLI_PARSER} ];
             then
-                main ${COMMAND_AC_AGRS[@]}
+                main "${COMMAND_AC_AGRS[@]}"
             else
-                FULL_COMMAND=${COMMAND_AC_AGRS[@]}
-                argv-parser ${FULL_COMMAND}
-                main-args ${COMMAND_BC_AGRS[@]}
-                main-exec ${FULL_COMMAND}
+                FULL_COMMAND="${COMMAND_AC_AGRS[@]}"
+                argv-parser "${FULL_COMMAND}"
+                main-args "${COMMAND_BC_AGRS[@]}"
+                main-exec "${FULL_COMMAND}"
             fi
         else
             # If not exist a shell file, then show help content which in cli file or current shell file
@@ -87,13 +87,13 @@ function main() {
 
 # Main function, args running function.
 function main-args() {
-    for arg in ${@}
+    for arg in "${@}"
     do
         IFS='=' read -ra ADDR <<< "${arg}"
         key=${ADDR[0]}
         value=${ADDR[1]}
-        [ -z ${SHELL_FILE} ] && eval ${BREADCRUMB}-args ${key} ${value} || source ${SHELL_FILE} args ${key} ${value}
-        common-args ${key} ${value}
+        [ -z ${SHELL_FILE} ] && eval ${BREADCRUMB}-args ${key} "${value}" || source ${SHELL_FILE} args ${key} "${value}"
+        common-args ${key} "${value}"
     done
 }
 
@@ -121,7 +121,7 @@ function main-exec() {
     then
         [ -z ${SHOW_HELP} ] && eval ${BREADCRUMB}-help || eval ${BREADCRUMB}
     else
-        [ ! -z ${SHOW_HELP} ] && source ${SHELL_FILE} help || source ${SHELL_FILE} action ${@}
+        [ ! -z ${SHOW_HELP} ] && source ${SHELL_FILE} help || source ${SHELL_FILE} action "${@}"
     fi
 }
 
@@ -132,19 +132,19 @@ function argv-parser() {
     COMMAND_BC_AGRS=()
     COMMAND_AC_AGRS=()
     is_find_cmd=0
-    for arg in ${@}
+    for arg in "${@}"
     do
         if [ ${is_find_cmd} -eq 0 ]
         then
             if [[ ${arg} =~ -+[a-zA-Z1-9]* ]]
             then
-                COMMAND_BC_AGRS+=(${arg})
+                COMMAND_BC_AGRS+=("${arg}")
             else
                 COMMAND=${arg}
                 is_find_cmd=1
             fi
         else
-            COMMAND_AC_AGRS+=(${arg})
+            COMMAND_AC_AGRS+=("${arg}")
         fi
     done
 }
@@ -158,7 +158,7 @@ function ini-parser() {
             IFS='=' read -ra ADDR <<< "${line%\;*}"
             key=${ADDR[0]}
             value=${ADDR[1]}
-            common-ini ${key} ${value}
+            common-ini ${key} "${value}"
         done < ${CLI_DIRECTORY}/${CLI_FILENAME}.ini
     fi
 }
@@ -190,7 +190,7 @@ function rc-parser() {
 # Common - ini configuration process
 function common-ini() {
     key=${1}
-    value=${2}
+    value=${@:2}
     case ${key} in
         "COMMAND_SCRIPT_DIR")
             CLI_SHELL_DIRECTORY=${CLI_DIRECTORY}/${value//\\/\/}
@@ -201,7 +201,7 @@ function common-ini() {
 # Common - args process
 function common-args() {
     key=${1}
-    value=${2}
+    value=${@:2}
     case ${key} in
         "--help")
             SHOW_HELP=1
@@ -223,7 +223,7 @@ function cli() {
 
 function cli-args() {
     key=${1}
-    value=${2}
+    value=${@:2}
     case ${key} in
         "--prod")
             PROJECT_ENV="prod"
@@ -250,4 +250,4 @@ rc-parser
 # Import library
 source ${CLI_SHELL_DIRECTORY}/utils/tools.sh
 # Execute entrypoint function
-main ${@}
+main "${@}"

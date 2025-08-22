@@ -78,6 +78,7 @@ cli [system parameter] [command] [command parameter]
     - ```cli up --test```，執行 up 命令並宣告 ```--test``` 選項執行 ( 設定於 cli-up-args 中 )；此操作可以看到輸出 ```VARTEST = 1```
     - ```cli up --var1=123```，執行 up 命令並宣告 ```--var1``` 的內容 ( 設定於 cli-up-args 中 )；此操作可以看到輸出 ```VARNUMBER1 = 123```
     - ```cli up --var1=123 --test --var2=456```，執行 up 命令並宣告任意 Options，對於 Options 的執行順序是有左至右，若設計上有順序需要應加以說明
+    - ```cli up --var1="command -e=123"```，針對 Linux 環境可使用字串作為選項的內容
 + CLI 階層命令
     - ```cli```，執行 cli 主命令，但預設主命令並不包括任何行為，僅可設定主要參數
     - ```cli up```，執行 cli 中的 up 命令 ( 設定於 cli-up 中 )

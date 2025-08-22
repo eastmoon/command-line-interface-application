@@ -40,14 +40,14 @@ PROJECT_ENV="dev"
 
 # Command Parser
 function main() {
-    argv-parser ${@}
-    for arg in ${COMMAND_BC_AGRS[@]}
+    argv-parser "${@}"
+    for arg in "${COMMAND_BC_AGRS[@]}"
     do
         IFS='=' read -ra ADDR <<< "${arg}"
         key=${ADDR[0]}
         value=${ADDR[1]}
-        eval ${BREADCRUMB}-args ${key} ${value}
-        common-args ${key} ${value}
+        eval ${BREADCRUMB}-args ${key} "${value}"
+        common-args ${key} "${value}"
     done
     # Execute command
     if [ ! -z ${COMMAND} ];
@@ -60,7 +60,7 @@ function main() {
             [ "$(whence -w ${BREADCRUMB} | awk '{print $2}')" = "function" ] && IS_FUNCTION=1 || true
         fi
         if [ ! -z IS_FUNCTION ]; then
-            main ${COMMAND_AC_AGRS[@]}
+            main "${COMMAND_AC_AGRS[@]}"
         else
             cli-help
         fi
@@ -87,19 +87,19 @@ function argv-parser() {
     COMMAND_BC_AGRS=()
     COMMAND_AC_AGRS=()
     is_find_cmd=0
-    for arg in ${@}
+    for arg in "${@}"
     do
         if [ ${is_find_cmd} -eq 0 ]
         then
             if [[ ${arg} =~ -+[a-zA-Z1-9]* ]]
             then
-                COMMAND_BC_AGRS+=(${arg})
+                COMMAND_BC_AGRS+=("${arg}")
             else
                 COMMAND=${arg}
                 is_find_cmd=1
             fi
         else
-            COMMAND_AC_AGRS+=(${arg})
+            COMMAND_AC_AGRS+=("${arg}")
         fi
     done
 }
@@ -113,7 +113,7 @@ function cli() {
 
 function cli-args() {
     key=${1}
-    value=${2}
+    value=${@:2}
     case ${key} in
         "--prod")
             PROJECT_ENV="prod"
@@ -154,7 +154,7 @@ function cli-up {
 
 function cli-up-args {
     key=${1}
-    value=${2}
+    value=${@:2}
     case ${key} in
         "--var1")
             VARNUMBER1=${value}
@@ -221,4 +221,4 @@ function cli-down-help {
 
 # ------------------- execute script -------------------
 
-main ${@}
+main "${@}"

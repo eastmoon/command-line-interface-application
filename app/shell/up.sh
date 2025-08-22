@@ -2,9 +2,9 @@
 #@VALUE=123
 
 # Declare variable
-[ -z ${VARNUMBER1} ] && export VARNUMBER1=0
-[ -z ${VARNUMBER2} ] && export VARNUMBER2=0
-[ -z ${VARTEST} ] && export VARTEST=0
+[ -z "${VARNUMBER1}" ] && export VARNUMBER1=0
+[ -z "${VARNUMBER2}" ] && export VARNUMBER2=0
+[ -z "${VARTEST}" ] && export VARTEST=0
 
 # Declare function
 function action {
@@ -17,7 +17,7 @@ function action {
 
 function args {
     key=${1}
-    value=${2}
+    value=${@:2}
     case ${key} in
         "--var1")
             VARNUMBER1=${value}
